@@ -3,6 +3,12 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- This is an SEO Change 1-->
+    <meta name="description" content="Free personal-budget management app">
+    <!-- This is an SEO Change 2-->
+    <meta name="author" content="Bharadwaj Tirunagaru">
+    <!-- This is an SEO Change 3-->
+    <meta name="keywords" content="HTML, CSS">
     <title>Personal Budget</title>
     <!-- added dot '.' to the front of the links to access the files in the current directory -->
     <link rel="stylesheet" href="./reset.css">
@@ -10,101 +16,128 @@
 </head>
 <body>
 
-    <div class="menu">
+    <!--This is an A11y Change 2-->
+    <!-- clicking the skip-to-main shows up the main_content section -->
+    <a class="skip-to-main" href="#main_content">Skip to main content</a>
+
+    <!-- This is a Semantic HTML Change 1 -->
+    <!-- changed div to nav -->
+    <nav class="menu">
         <ul>
             <li><a href="/">Home</a></li>
-            <li><a href="about.html">About</a></li>
-            <li><a href="login.html">Login</a></li>
+            <!-- added dot '.' to the front of the links to access the files in the current directory -->
+            <li><a href="./about.html">About</a></li>
+            <li><a href="./login.html">Login</a></li>
             <li><a href="https://google.com">Google</a></li>
         </ul>
-    </div>
+    </nav>
 
-    <div class="hero">
-        <!-- semantic one -->
-        <header>
+    <!-- This is a Semantic HTML Change 2 -->
+    <!-- changed div to section -->
+    <section class="hero">
+
+        <!-- This is a Semantic HTML Change 3 -->
+        <!-- Added header tag-->
+        <!-- This is an A11y Change 1 -->
+        <!-- role defines the type of element and its purpose -->
+        <header role="banner">
             <h1>Personal Budget</h1>
             <h2>A personal-budget management app</h2>
         </header>
-        
-    </div>
+
+    </section>
 
     <div class="container center">
 
         <div class="page-area">
-
-            <div class="text-box">
+        <!--This is an A11y Change 2-->
+        <!-- This is the main content section that is shown after clicking skip-to-main -->
+        <p id="main_content" tabindex="-1">
+            <!-- This is a Semantic HTML Change 4 -->
+            <!-- changed div to article -->
+            <article class="text-box">
                 <h1>Stay on track</h1>
                 <p>
                     Do you know where you are spending your money? If you really stop to track it down,
                     you would get surprised! Proper budget management depends on real data... and this
                     app will help you with that!
                 </p>
-            </div>
+            </article>
     
-            <div class="text-box">
+            <article class="text-box">
                 <h1>Alerts</h1>
                 <p>
                     What if your clothing budget ended? You will get an alert. The goal is to never go over the budget.
                 </p>
-            </div>
+            </article>
     
-            <div class="text-box">
+            <article class="text-box">
                 <h1>Results</h1>
                 <p>
                     People who stick to a financial plan, budgeting every expense, get out of debt faster!
                     Also, they to live happier lives... since they expend without guilt or fear... 
                     because they know it is all good and accounted for.
                 </p>
-            </div>
+            </article>
     
-            <div class="text-box">
+            <article class="text-box">
                 <h1>Free</h1>
                 <p>
                     This app is free!!! And you are the only one holding your data!
                 </p>
-            </div>
+            </article>
     
-            <div class="text-box">
+            <article class="text-box">
                 <h1>Stay on track</h1>
                 <p>
                     Do you know where you are spending your money? If you really stop to track it down,
                     you would get surprised! Proper budget management depends on real data... and this
                     app will help you with that!
                 </p>
-            </div>
+            </article>
     
-            <div class="text-box">
+            <article class="text-box">
                 <h1>Alerts</h1>
                 <p>
                     What if your clothing budget ended? You will get an alert. The goal is to never go over the budget.
                 </p>
-            </div>
+            </article>
     
-            <div class="text-box">
+            <article class="text-box">
                 <h1>Results</h1>
                 <p>
                     People who stick to a financial plan, budgeting every expense, get out of debt faster!
                     Also, they to live happier lives... since they expend without guilt or fear... 
                     because they know it is all good and accounted for.
                 </p>
-            </div>
+            </article>
     
-            <div class="text-box">
+            <article class="text-box">
                 <h1>Free</h1>
                 <p>
                     This app is free!!! And you are the only one holding your data!
                 </p>
-            </div>
+            </article>
 
         </div>
 
     </div>
 
-    <div class="bottom">
-        <div class="center">
-            All rights reserved &copy; Fabio Nolasco
-        </div>
-    </div>
+    <!-- This is a Semantic HTML Change 4 -->
+    <!-- changed div to footer -->
+    <footer class="bottom">
+        <!-- This is a Semantic HTML Change 2 -->
+        <!-- changed div to section -->
+        <section class="center">
+            All rights reserved &copy; Bharadwaj Tirunagaru 
+            <a href="https://github.com/bharadwajtirunagaru/personal-budget" target="_blank">
+                <!--This is an A11y Change 3-->
+                <!-- clicking the icon takes the user to the source code of person budget -->
+                <img  src="./git_hub_icon.png" alt="Source Code link" />
+            </a>
+        </section>
+        
+    <footer>
 
 </body>
 </html>
