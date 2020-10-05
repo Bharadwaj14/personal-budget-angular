@@ -119,7 +119,9 @@
                 </p>
             </article>
 
-        </div>
+        </div >
+        <h1 >Chart-D3JS</h1>
+        <div id="ChartD3JS"></div> -->
 
     </div>
 
@@ -139,8 +141,10 @@
         
     <footer>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.20.0/axios.min.js" integrity="sha512-quHCp3WbBNkwLfYUMd+KwBAgpVukJu5MncuQaWXgCrfgcxCJAq/fo+oqrRKOj+UKEmyMCG3tb8RB63W+EmrOBg==" crossorigin="anonymous"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js" integrity="sha512-s+xg36jbIujB2S2VKfpGmlC3T5V2TF3lY48DX7u2r9XzGzgPsa6wTpOQA7J9iffvdeBN0q9tKzRxVxw1JviZPg==" crossorigin="anonymous"></script>
+    <script src="https://d3js.org/d3.v3.min.js"></script>
     <script>
+        getBudget();
         var dataSource = {
             datasets: [
                 {
@@ -164,6 +168,7 @@
                 type: 'pie',
                 data: dataSource
             });
+
         }
 
         function getBudget(){
@@ -172,12 +177,196 @@
                 console.log(res);
                 for(var i=0; i< res.data.myBudget.length; i++){
                     dataSource.datasets[0].data[i] = res.data.myBudget[i].budget;
-                    dataSource.labels[i] = res.data.myBudget[i].title;                
+                    dataSource.labels[i] = res.data.myBudget[i].title;             
                  }
+
+                //using the data from the first axios call which gets the data from the budget.json file instead of reading 
+                //the budget.json file again that improves performance in real time. 
+                var color = d3.scale.ordinal()
+                    .domain(dataSource.labels)
+                    .range(dataSource.datasets[0].backgroundColor);
+
+                function budgetDataD31(){
+                    var labels = color.domain();
+                    var i=0;
+                    return labels.map(function(label){
+                        return { label: label, value: dataSource.datasets[0].data[i++] }
+                    });
+                }
                  createChart();
+
+                //Creating the Donut chart with the budget.json file data stored in the variable datasource
+                 createDonutChart(budgetDataD31(), color);
+
             });
         }
-        getBudget();
+        // getBudget();
+    </script>
+    <script>
+        var svg = d3.select("#ChartD3JS")
+            .append("svg")
+            .append("g")
+
+        svg.append("g")
+            .attr("class", "slices");
+        svg.append("g")
+            .attr("class", "labels");
+        svg.append("g")
+            .attr("class", "lines");
+
+        var width = 960,
+            height = 450,
+            radius = Math.min(width, height) / 2;
+
+        var pie = d3.layout.pie()
+            .sort(null)
+            .value(function(d) {
+                return d.value;
+            });
+
+        var arc = d3.svg.arc()
+            .outerRadius(radius * 0.8)
+            .innerRadius(radius * 0.4);
+
+        var outerArc = d3.svg.arc()
+            .innerRadius(radius * 0.9)
+            .outerRadius(radius * 0.9);
+
+        svg.attr("transform", "translate(" + width / 2 + "," + height / 2 + ")");
+
+        var key = function(d){ return d.data.label; };
+
+        //using the data from the first axios call that gets the data from the budget.json file instead of reading the file again
+        // which improves the performance so commented the below logic to read the json from the file again using axios 
+        // var dataSourceD3 = {
+        //             datasets: [
+        //                 {
+        //                     data: [],
+        //                     backgroundColor: [
+        //                         '#ffcd56',
+        //                         '#ff6384',
+        //                         '#36a2eb',
+        //                         '#fd6b19',
+        //                         '#0000FF',
+        //                         '#008080',
+        //                         '#800000',
+        //                     ],
+        //                 }
+        //             ],
+        //             labels: []
+        //         };
+        // var color;
+        // function getBudgetD3(){
+        //     axios.get('/budget')
+        //     .then(function(res){
+        //         for(var i=0; i< res.data.myBudget.length; i++){
+        //             dataSourceD3.datasets[0].data[i] = res.data.myBudget[i].budget;
+        //             dataSourceD3.labels[i] = res.data.myBudget[i].title;                
+        //          }
+        //     color = d3.scale.ordinal()
+        //         .domain(dataSourceD3.labels)
+        //         .range(dataSourceD3.datasets[0].backgroundColor);
+        //     function budgetDataD3 (){
+        //         var labels = color.domain();
+        //         var i=0;
+        //         return labels.map(function(label){
+        //             return { label: label, value: dataSourceD3.datasets[0].data[i++] }
+        //         });
+        //     }   
+        //     createDonutChart(budgetDataD3());
+        //     });
+        // }
+        // getBudgetD3();
+
+        function createDonutChart(data, color) {
+        /* ------- PIE SLICES -------*/
+        var slice = svg.select(".slices").selectAll("path.slice")
+            .data(pie(data), key);
+
+        slice.enter()
+            .insert("path")
+            .style("fill", function(d) { return color(d.data.label); })
+            .attr("class", "slice");
+
+        slice		
+            .transition().duration(1000)
+            .attrTween("d", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    return arc(interpolate(t));
+                };
+            })
+
+        slice.exit()
+            .remove();
+
+        /* ------- TEXT LABELS -------*/
+
+        var text = svg.select(".labels").selectAll("text")
+            .data(pie(data), key);
+
+        text.enter()
+            .append("text")
+            .attr("dy", ".35em")
+            .text(function(d) {
+                return d.data.label;
+            });
+        
+        function midAngle(d){
+            return d.startAngle + (d.endAngle - d.startAngle)/2;
+        }
+
+        text.transition().duration(1000)
+            .attrTween("transform", function(d) {
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    var d2 = interpolate(t);
+                    var pos = outerArc.centroid(d2);
+                    pos[0] = radius * (midAngle(d2) < Math.PI ? 1 : -1);
+                    return "translate("+ pos +")";
+                };
+            })
+            .styleTween("text-anchor", function(d){
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    var d2 = interpolate(t);
+                    return midAngle(d2) < Math.PI ? "start":"end";
+                };
+            });
+
+        text.exit()
+            .remove();
+
+        /* ------- SLICE TO TEXT POLYLINES -------*/
+
+        var polyline = svg.select(".lines").selectAll("polyline")
+            .data(pie(data), key);
+        
+        polyline.enter()
+            .append("polyline");
+
+        polyline.transition().duration(1000)
+            .attrTween("points", function(d){
+                this._current = this._current || d;
+                var interpolate = d3.interpolate(this._current, d);
+                this._current = interpolate(0);
+                return function(t) {
+                    var d2 = interpolate(t);
+                    var pos = outerArc.centroid(d2);
+                    pos[0] = radius * 0.95 * (midAngle(d2) < Math.PI ? 1 : -1);
+                    return [arc.centroid(d2), outerArc.centroid(d2), pos];
+                };			
+            });
+        
+        polyline.exit()
+            .remove();
+        };
     </script>
 </body>
 </html>
